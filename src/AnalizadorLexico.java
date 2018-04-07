@@ -1,5 +1,7 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -7,28 +9,32 @@ import java.util.*;
  */
 public class AnalizadorLexico {
     private static int nroLinea = 0;
-    private final int NUMERO = 0;
 
     public void error(String mensaje) {
         System.out.println("Error léxico en la línea " + nroLinea + ". " + mensaje);
     }
 
-    public static void siguienteLexema(String linea) {
-        List<String> tokens = Arrays.asList(linea.split(" "));
+    private static void siguienteLexema(String fuente) {
+        char[] array = fuente.toCharArray();
+        int i = 0;
+        while (i < array.length) {
+            char c = array[i];
+            if (c == ' ' || c == '\t') continue; //elimina espacios en blanco y tabulaciones
+            else if (c == '\n') { //si es salto de línea, aumenta la cantidad
+                nroLinea += 1;
+                System.out.println("ES UN SALTO DE LINEA"); //borrar
+                continue;
+            }
 
-        /*Iterator it = tokens.iterator();
-        while (it.hasNext()) {
-            String token = (String) it.next();
-            System.out.println("'"+token+"'");
-        }*/
 
-        tokens.forEach(token -> {
-            System.out.println("'"+token+"'");
-        });
+
+            System.out.println(c);
+            i += 1;
+        }
 
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Ingrese la ruta hasta el archivo: ");
@@ -37,16 +43,11 @@ public class AnalizadorLexico {
 
         try {
             //lee el archivo según el path que fue introducido
-            Scanner sc = new Scanner(new File(path));
+            String contenido = new String(Files.readAllBytes(Paths.get(path)));
+            //System.out.println(contenido); //borrar
+            siguienteLexema(contenido);
 
-            while (sc.hasNext()) {
-                nroLinea += 1;
-                String linea = sc.nextLine();
-                System.out.println(nroLinea + " " + linea);
-                siguienteLexema(linea);
-            }
-
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
