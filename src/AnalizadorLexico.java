@@ -19,11 +19,32 @@ public class AnalizadorLexico {
         int i = 0;
         while (i < array.length) {
             char c = array[i];
-            if (c == ' ' || c == '\t') continue; //elimina espacios en blanco y tabulaciones
+            if (c == ' ' || c == '\t')
+                continue; //elimina espacios en blanco y tabulaciones
             else if (c == '\n') { //si es salto de línea, aumenta la cantidad
                 nroLinea += 1;
                 System.out.println("ES UN SALTO DE LINEA"); //borrar
                 continue;
+            } else if (c == '[') {
+                //L_CORCHETE
+            } else if (c == ']') {
+                //R_CORCHETE
+            } else if (c == '{') {
+                //L_LLAVE
+            } else if (c == '}') {
+                //R_LLAVE
+            } else if (c == ',') {
+                //COMA
+            } else if (c == ':') {
+                //DOS_PUNTOS
+            } else if (c == 'T') {
+                //PR_TRUE
+            } else if (c == 'F') {
+                //PR_FALSE
+            } else if (c == 'N') {
+                //PR_NULL
+            } else if (c == 'E') {
+                //EOF
             }
 
 
