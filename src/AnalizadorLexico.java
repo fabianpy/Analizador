@@ -18,12 +18,14 @@ public class AnalizadorLexico {
         System.out.println("Error léxico en la línea " + nroLinea + ". " + mensaje);
     }
 
-    private static void generarOutput(String value){
-        try {
-            FileWriter fw = new FileWriter(DIRECTORIO_ACTUAL.concat("output.json"), true);
-            BufferedWriter bw = new BufferedWriter(fw);
+    private static void generarOutput(ArrayList<String> valueList){
 
-            bw.write(value);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(DIRECTORIO_ACTUAL.concat("output.txt")))) {
+
+            for (String value : valueList) {
+                System.out.println("value: " + value); //borrar
+                bw.write(value + " ");
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -34,13 +36,23 @@ public class AnalizadorLexico {
     private static void siguienteLexema(String fuente) {
         char[] array = fuente.toCharArray();
         int i = 0;
+        ArrayList<String> contenidoList = new ArrayList<String>();
         while (i < array.length) {
             char c = array[i];
-            if (c == ' ' || c == '\t')
+
+            System.out.println("valor de c = '" + c + "' ; valor de i = "+i);
+
+            if (c == ' ' || c == '\t') {
+                i += 1;
+                contenidoList.add(String.valueOf(c));
                 continue; //elimina espacios en blanco y tabulaciones
+            }
+
             else if (c == '\n') { //si es salto de línea, aumenta la cantidad
                 nroLinea += 1;
-                System.out.println("ES UN SALTO DE LINEA"); //borrar
+                System.out.println("ES UN SALTO DE LINEA. i = "+ i); //borrar
+                i += 1;
+                contenidoList.add(String.valueOf(c));
                 continue;
             } else if (c == '[') {
                 //L_CORCHETE
@@ -55,23 +67,23 @@ public class AnalizadorLexico {
                 //COMA
             } else if (c == '"') {
                 //LITERAL_CADENA
-                String id = "";
+                String id = ""+c;
                 int j = i;
                 try {
                     do {
-                        j += j;
+                        j += 1;
                         c = array[j];
                         if (c == '\n')
                             error("Se llegó al final de la línea sin finalizar el nombre del identificador. Se esperaba: '\"' ");
                         id = id + c;
                     } while (c != '"' && c != '\n');
-                    System.out.println("AGREGA ID A LA TABLA"); //borrar
+                    System.out.println("  AGREGA ID A LA TABLA. id = " + id); //borrar
                     //TODO: agregar 'id' a la tabla de símbolos
                 } catch (ArrayIndexOutOfBoundsException e) {
                     error("Se llegó al final del archivo sin finalizar el nombre del identificador. Se esperaba: '\"' ");
                     e.printStackTrace();
                 }
-                generarOutput("LITERAL_CADENA"); //TODO: cambiar por key del hash
+                //generarOutput("LITERAL_CADENA"); //TODO: cambiar por key del hash
                 i = j; //actualiza el índice principal
             } else if (c == Integer.valueOf(c)) {
                 //LITERAL_CADENA
@@ -87,11 +99,11 @@ public class AnalizadorLexico {
                 //EOF
             }
 
-
-
-            System.out.println(c);
             i += 1;
+            contenidoList.add("LITERAL_CADENA"); //TODO: cambiar por los valores del key
+
         }
+        generarOutput(contenidoList);
 
     }
 
