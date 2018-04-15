@@ -1,4 +1,7 @@
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,9 +12,23 @@ import java.util.*;
  */
 public class AnalizadorLexico {
     private static int nroLinea = 0;
+    private static final String DIRECTORIO_ACTUAL = new File(".").getAbsolutePath().substring(0, new File(".").getAbsolutePath().lastIndexOf("."));
 
-    public void error(String mensaje) {
+    private static void error(String mensaje) {
         System.out.println("Error léxico en la línea " + nroLinea + ". " + mensaje);
+    }
+
+    private static void generarOutput(String value){
+        try {
+            FileWriter fw = new FileWriter(DIRECTORIO_ACTUAL.concat("output.json"), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.write(value);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private static void siguienteLexema(String fuente) {
@@ -27,6 +44,7 @@ public class AnalizadorLexico {
                 continue;
             } else if (c == '[') {
                 //L_CORCHETE
+
             } else if (c == ']') {
                 //R_CORCHETE
             } else if (c == '{') {
@@ -35,6 +53,28 @@ public class AnalizadorLexico {
                 //R_LLAVE
             } else if (c == ',') {
                 //COMA
+            } else if (c == '"') {
+                //LITERAL_CADENA
+                String id = "";
+                int j = i;
+                try {
+                    do {
+                        j += j;
+                        c = array[j];
+                        if (c == '\n')
+                            error("Se llegó al final de la línea sin finalizar el nombre del identificador. Se esperaba: '\"' ");
+                        id = id + c;
+                    } while (c != '"' && c != '\n');
+                    System.out.println("AGREGA ID A LA TABLA"); //borrar
+                    //TODO: agregar 'id' a la tabla de símbolos
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    error("Se llegó al final del archivo sin finalizar el nombre del identificador. Se esperaba: '\"' ");
+                    e.printStackTrace();
+                }
+                generarOutput("LITERAL_CADENA"); //TODO: cambiar por key del hash
+                i = j; //actualiza el índice principal
+            } else if (c == Integer.valueOf(c)) {
+                //LITERAL_CADENA
             } else if (c == ':') {
                 //DOS_PUNTOS
             } else if (c == 'T') {
