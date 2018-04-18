@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 /**
  * Created by Haide on 03/04/2018.
  */
@@ -16,16 +18,25 @@ public class TablaSimbolos {
 
     class Entrada{
         int compLex;
-
     }
 
-    private static void insertTablaSimbolos(String componente, Character caracter){
-
-    }
-
-    public static void inicializarTablaSimbolos(){
-        insertTablaSimbolos(",",',');
-    }
+//    private static void insertTablaSimbolos(String componente, Integer caracter){
+//        HashMap tabla = new HashMap();
+//        tabla.put()
+//    }
+//
+//    public static void inicializarTablaSimbolos(){
+//        insertTablaSimbolos("{",'{');
+//        insertTablaSimbolos("}",'}');
+//        insertTablaSimbolos("[",'[');
+//        insertTablaSimbolos("]",']');
+//        insertTablaSimbolos(",",',');
+//        insertTablaSimbolos(":",':');
+//        insertTablaSimbolos(";",';');
+//        insertTablaSimbolos("(",'(');
+//        insertTablaSimbolos(")",')');
+//
+//    }
 
 
 }
