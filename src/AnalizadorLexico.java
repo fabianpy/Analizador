@@ -85,8 +85,79 @@ public class AnalizadorLexico {
                 }
                 //generarOutput("LITERAL_CADENA"); //TODO: cambiar por key del hash
                 i = j; //actualiza el índice principal
-            } else if (c == Integer.valueOf(c)) {
-                //LITERAL_CADENA
+            } else if (Character.isDigit(c)) {
+                //LITERAL_NUM
+                // [0-9]+(\.[0-9]+)?((e|E)(+|-)?[0-9]+)?
+                int estado = 0;
+                String numero = "";
+                boolean acepta = false;
+                while (!acepta) {
+                    if (c != ',' && c != '\n') {
+                        c = array[i];
+                        switch (estado) {
+                            case 0:
+                                //es un entero
+                                numero += c; //arma el numero
+                                if (array[i+1] == ',' || array[i+1] == '\n')
+                                    acepta = true;
+                                else if (array[i+1] == '.')
+                                    estado = 1;
+                                else if (Character.toLowerCase(array[i+1]) == 'e')
+                                    estado = 2;
+                                break;
+                            case 1:
+                                //es un punto decimal
+                                numero += c; //arma el numero
+                                if (!Character.isDigit(array[i+1])) {
+                                    estado = -1;
+                                    break;
+                                }
+                                estado = 0; //después del punto, debe venir un número
+                                break;
+                            case 2:
+                                //es una e|E
+                                numero += c; //arma el numero
+                                if (array[i+1] == '+' || array[i+1] == '-') {
+                                    estado = 0; //tiene que venir un número
+                                    break;
+                                }
+                                if (!Character.isDigit(array[i+1])) {
+                                    estado = -1;
+                                    break;
+                                } else
+                                    estado = 0; //es un número
+                            case 3:
+                                //
+                                numero += c; //arma el numero
+                                break;
+                            case 4:
+                                //
+                                numero += c; //arma el numero
+                                break;
+                            case 5:
+                                //
+                                numero += c; //arma el numero
+                                break;
+                            case 6:
+                                //
+                                numero += c; //arma el numero
+                                break;
+                            case -1:
+                                //número no válido
+                                numero += c; //arma el número
+                                error(numero + " no es un número válido. No se esperaba '"+c+"'");
+                                acepta = true; //para que salga del ciclo
+                        }
+                    } else if (acepta) {
+                        //TODO: agregar 'id' a la tabla de símbolos
+
+                    } /*else {
+                        error("'"+numero+"' no es nu número válido.");
+                        acepta = false;
+                    }*/
+                    i+=1;
+                }
+
             } else if (c == ':') {
                 //DOS_PUNTOS
             } else if (c == 'T') {
