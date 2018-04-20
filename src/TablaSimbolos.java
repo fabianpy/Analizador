@@ -15,13 +15,9 @@ public class TablaSimbolos {
     public static final Integer PR_FALSE = 81;
     public static final Integer PR_NULL = 82;
     public static final Integer EOF = 83;
-
-    class Entrada{
-        int compLex;
-    }
+    public static HashMap<String, Integer> tabla = new HashMap<String, Integer>();
 
     private static void insertTablaSimbolos(String componente, Integer caracter){
-        HashMap tabla = new HashMap();
         tabla.put(componente, caracter);
     }
 
@@ -36,6 +32,9 @@ public class TablaSimbolos {
         insertTablaSimbolos("False", PR_FALSE);
     }
 
-
+    public static Integer buscar(String componente){
+        Integer codigo =tabla.get(componente);
+        return codigo;
+    }
 }
 
