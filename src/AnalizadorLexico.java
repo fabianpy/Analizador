@@ -66,7 +66,7 @@ public class AnalizadorLexico {
     private static void siguienteLexema(String fuente) {
         char[] array = fuente.toCharArray();
         Integer i = 0;
-        ArrayList<String> contenidoList = new ArrayList<String>();
+        ArrayList<String> contenidoList = new ArrayList<>();
         while (i < array.length) {
             char c = array[i];
 
@@ -86,19 +86,19 @@ public class AnalizadorLexico {
                 continue;
             } else if (c == '[') {
                 //L_CORCHETE
-                contenidoList.add(TablaSimbolos.L_CORCHETE);
+                contenidoList.add("L_CORCHETE");
             } else if (c == ']') {
                 //R_CORCHETE
-                contenidoList.add(TablaSimbolos.R_CORCHETE);
+                contenidoList.add("R_CORCHETE");
             } else if (c == '{') {
                 //L_LLAVE
-                contenidoList.add(TablaSimbolos.L_LLAVE);
+                contenidoList.add("L_LLAVE");
             } else if (c == '}') {
                 //R_LLAVE
-                contenidoList.add(TablaSimbolos.R_LLAVE);
+                contenidoList.add("R_LLAVE");
             } else if (c == ',') {
                 //COMA
-                contenidoList.add(TablaSimbolos.COMA);
+                contenidoList.add("COMA");
             } else if (c == '"') {
                 //LITERAL_CADENA
                 String id = Character.toString(c);
@@ -114,7 +114,7 @@ public class AnalizadorLexico {
                     System.out.println("  AGREGA ID A LA TABLA. id = " + id); //borrar
                     if (TablaSimbolos.buscar(id) == null) {
                         TablaSimbolos.insertTablaSimbolos(id, null);
-                        contenidoList.add(TablaSimbolos.LITERAL_CADENA);
+                        contenidoList.add("LITERAL_CADENA");
                     }
 
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -170,7 +170,7 @@ public class AnalizadorLexico {
                                 case 3:
                                     //número podría ser válido
                                     if (c == ' ') {
-                                        contenidoList.add(TablaSimbolos.LITERAL_NUM);
+                                        contenidoList.add("LITERAL_NUM");
                                         acepta = true;
                                     } else {
                                         throw new Exception("Caso no contemplado. c = " + c);
@@ -206,7 +206,7 @@ public class AnalizadorLexico {
 
             } else if (c == ':') {
                 //DOS_PUNTOS
-                contenidoList.add(TablaSimbolos.DOS_PUNTOS);
+                contenidoList.add("DOS_PUNTOS");
             } else if (Character.toLowerCase(c) == 't') {
                 //PR_TRUE
                 //puede formarse la palabra 'true'
@@ -214,7 +214,7 @@ public class AnalizadorLexico {
                 HashMap<String, Object> map = analizarPalabraReservada(array, i);
                 System.out.println("palabra formada: " + map.get("palabra"));
                 if (map.get("palabra").equals("true")) {
-                    contenidoList.add(TablaSimbolos.PR_TRUE);
+                    contenidoList.add("PR_TRUE");
                 } else {
                     error("No se reconoce '"+map.get("palabra")+"' como componente del lenguaje.");
                 }
@@ -228,7 +228,7 @@ public class AnalizadorLexico {
                 System.out.println("palabra formada: " + map.get("palabra"));
                 if (map.get("palabra").equals("false")) {
                     System.out.println("valor de palabra : " + map.get("palabra"));
-                    contenidoList.add(TablaSimbolos.PR_FALSE);
+                    contenidoList.add("PR_FALSE");
                 } else {
                     error("No se reconoce '"+map.get("palabra")+"' como componente del lenguaje.");
                 }
@@ -241,7 +241,7 @@ public class AnalizadorLexico {
                 HashMap<String, Object> map = analizarPalabraReservada(array, i);
                 System.out.println("palabra formada: " + map.get("palabra"));
                 if (map.get("palabra").equals("null")) {
-                    contenidoList.add(TablaSimbolos.PR_NULL);
+                    contenidoList.add("PR_NULL");
                 } else {
                     error("No se reconoce '"+map.get("palabra")+"' como componente del lenguaje.");
                 }

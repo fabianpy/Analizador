@@ -43,14 +43,14 @@ public class TablaSimbolos {
     public static void inicializarTablaSimbolos(){
         Collection<String> componenteList = new ArrayList<>();
         componenteList.add(L_CORCHETE); //0
-        componenteList.add(R_CORCHETE); //2
-        componenteList.add(L_LLAVE);    //3
-        componenteList.add(R_LLAVE);    //4
-        componenteList.add(COMA);       //5
-        componenteList.add(DOS_PUNTOS); //6
-        componenteList.add(PR_TRUE);    //7
-        componenteList.add(PR_FALSE);   //8
-        componenteList.add(PR_NULL);    //9
+        componenteList.add(R_CORCHETE); //1
+        componenteList.add(L_LLAVE);    //2
+        componenteList.add(R_LLAVE);    //3
+        componenteList.add(COMA);       //4
+        componenteList.add(DOS_PUNTOS); //5
+        componenteList.add(PR_TRUE);    //6
+        componenteList.add(PR_FALSE);   //7
+        componenteList.add(PR_NULL);    //8
         Integer codigo = 0;
 
         for (String comp : componenteList) {
