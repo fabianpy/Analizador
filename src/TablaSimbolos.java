@@ -1,10 +1,12 @@
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
  * Created by Haide on 03/04/2018.
  */
 public class TablaSimbolos {
-    public static final Integer L_CORCHETE = 73;
+    /*public static final Integer L_CORCHETE = 73;
     public static final Integer R_CORCHETE = 74;
     public static final Integer L_LLAVE = 75;
     public static final Integer R_LLAVE = 76;
@@ -14,27 +16,52 @@ public class TablaSimbolos {
     public static final Integer PR_TRUE = 80;
     public static final Integer PR_FALSE = 81;
     public static final Integer PR_NULL = 82;
-    public static final Integer EOF = 83;
-    public static HashMap<String, Integer> tabla = new HashMap<String, Integer>();
+    public static final Integer EOF = 83;*/
 
-    private static void insertTablaSimbolos(String componente, Integer caracter){
-        tabla.put(componente, caracter);
+    public static final String L_CORCHETE = "[";
+    public static final String R_CORCHETE = "]";
+    public static final String L_LLAVE = "{";
+    public static final String R_LLAVE = "}";
+    public static final String COMA = ",";
+    public static final String DOS_PUNTOS = ":";
+    public static final String LITERAL_CADENA = "LITERAL_CADENA";
+    public static final String LITERAL_NUM = "LITERAL_NUM";
+    public static final String PR_TRUE = "true";
+    public static final String PR_FALSE = "false";
+    public static final String PR_NULL = "null";
+
+    public static HashMap<String, Integer> tabla = new HashMap<>();
+
+
+    public static void insertTablaSimbolos(String componente, Integer codigo){
+        if (codigo == null) {
+            codigo = tabla.size() + 1;
+        }
+        tabla.put(componente, codigo);
     }
 
     public static void inicializarTablaSimbolos(){
-        insertTablaSimbolos("{", L_LLAVE);
-        insertTablaSimbolos("}", R_LLAVE);
-        insertTablaSimbolos("[", L_CORCHETE);
-        insertTablaSimbolos("]", R_CORCHETE);
-        insertTablaSimbolos(",", COMA);
-        insertTablaSimbolos(":", DOS_PUNTOS);
-        insertTablaSimbolos("True", PR_TRUE);
-        insertTablaSimbolos("False", PR_FALSE);
+        Collection<String> componenteList = new ArrayList<>();
+        componenteList.add(L_CORCHETE); //0
+        componenteList.add(R_CORCHETE); //2
+        componenteList.add(L_LLAVE);    //3
+        componenteList.add(R_LLAVE);    //4
+        componenteList.add(COMA);       //5
+        componenteList.add(DOS_PUNTOS); //6
+        componenteList.add(PR_TRUE);    //7
+        componenteList.add(PR_FALSE);   //8
+        componenteList.add(PR_NULL);    //9
+        Integer codigo = 0;
+
+        for (String comp : componenteList) {
+            insertTablaSimbolos(comp, codigo);
+            codigo++;
+        }
+
     }
 
     public static Integer buscar(String componente){
-        Integer codigo =tabla.get(componente);
-        return codigo;
+        return tabla.get(componente);
     }
 }
 

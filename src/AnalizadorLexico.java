@@ -18,26 +18,32 @@ public class AnalizadorLexico {
         System.out.println("Error léxico en la línea " + nroLinea + ". " + mensaje);
     }
 
-    private static HashMap<String, Object> analizarPalabraReservada(char[] array, int i) {
-        int j = i;
+    private static HashMap<String, Object> analizarPalabraReservada(char[] array, Integer i) {
+        Integer j = i;
         char c = array[i];
-        HashMap<String, Object> hm = null;
-        String id = Character.toString(c);
+        HashMap<String, Object> hm = new HashMap<>();
+        String id = Character.toString(c).toLowerCase();
         try {
-            do {
-                j += 1;
-                c = array[j];
-                System.out.println("   VALOR ACTUAL DE ID = "+id);
+            System.out.println("valor de c en analizar palabra reservada = " + c);
+
+            while (array[j+1] != '"' && array[j+1] != ' ' && array[j+1] != ',') {
                 if (c == '\n')
                     error("Se llegó al final de la línea sin finalizar el nombre del identificador.");
-                id = id + Character.toLowerCase(c);
-            } while (c != '"' && c != ' ' && c != '\n' && c != ',');
+                System.out.println("   VALOR ACTUAL DE ID = "+id);
+                j=j+1;
+                c = array[j];
+                id += Character.toLowerCase(c);
+                System.out.println("valor de c en analizar palabra reservada 2 = " + c);
+            }
+
         } catch (ArrayIndexOutOfBoundsException e) {
             error("Se llegó al final del archivo sin finalizar el nombre del identificador. Se esperaba: '\"' ");
             e.printStackTrace();
         }
+        System.out.println("valor de id a retornar = " + id);
         hm.put("palabra", id);
         hm.put("indice", j);
+        System.out.println("valor de id a retornar despues = " + id);
         return hm;
     }
 
@@ -59,12 +65,12 @@ public class AnalizadorLexico {
 
     private static void siguienteLexema(String fuente) {
         char[] array = fuente.toCharArray();
-        int i = 0;
+        Integer i = 0;
         ArrayList<String> contenidoList = new ArrayList<String>();
         while (i < array.length) {
             char c = array[i];
 
-            System.out.println("valor de c = '" + c + "' ; linea "+ nroLinea +" ; valor de i = "+i);
+            System.out.println("linea "+ nroLinea +" ; valor de c = '" + c + "' ; valor de i = "+i);
 
             if (c == ' ' || c == '\t') {
                 i += 1;
@@ -80,19 +86,19 @@ public class AnalizadorLexico {
                 continue;
             } else if (c == '[') {
                 //L_CORCHETE
-                contenidoList.add("L_CORCHETE");
+                contenidoList.add(TablaSimbolos.L_CORCHETE);
             } else if (c == ']') {
                 //R_CORCHETE
-                contenidoList.add("R_CORCHETE");
+                contenidoList.add(TablaSimbolos.R_CORCHETE);
             } else if (c == '{') {
                 //L_LLAVE
-                contenidoList.add("L_LLAVE");
+                contenidoList.add(TablaSimbolos.L_LLAVE);
             } else if (c == '}') {
                 //R_LLAVE
-                contenidoList.add("R_LLAVE");
+                contenidoList.add(TablaSimbolos.R_LLAVE);
             } else if (c == ',') {
                 //COMA
-                contenidoList.add("COMA");
+                contenidoList.add(TablaSimbolos.COMA);
             } else if (c == '"') {
                 //LITERAL_CADENA
                 String id = Character.toString(c);
@@ -106,14 +112,16 @@ public class AnalizadorLexico {
                         id = id + c;
                     } while (c != '"' && c != '\n');
                     System.out.println("  AGREGA ID A LA TABLA. id = " + id); //borrar
-                    //TODO: agregar 'id' a la tabla de símbolos
+                    if (TablaSimbolos.buscar(id) == null) {
+                        TablaSimbolos.insertTablaSimbolos(id, null);
+                        contenidoList.add(TablaSimbolos.LITERAL_CADENA);
+                    }
+
                 } catch (ArrayIndexOutOfBoundsException e) {
                     error("Se llegó al final del archivo sin finalizar el nombre del identificador. Se esperaba: '\"' ");
                     e.printStackTrace();
                 }
-                //generarOutput("LITERAL_CADENA"); //TODO: cambiar por key del hash
                 i = j; //actualiza el índice principal
-                contenidoList.add("LITERAL_CADENA");
             } else if (Character.isDigit(c)) {
                 //LITERAL_NUM
                 // [0-9]+(\.[0-9]+)?((e|E)(+|-)?[0-9]+)?
@@ -162,7 +170,7 @@ public class AnalizadorLexico {
                                 case 3:
                                     //número podría ser válido
                                     if (c == ' ') {
-                                        contenidoList.add("LITERAL_NUM");
+                                        contenidoList.add(TablaSimbolos.LITERAL_NUM);
                                         acepta = true;
                                     } else {
                                         throw new Exception("Caso no contemplado. c = " + c);
@@ -198,40 +206,50 @@ public class AnalizadorLexico {
 
             } else if (c == ':') {
                 //DOS_PUNTOS
-                contenidoList.add("DOS_PUNTOS");
+                contenidoList.add(TablaSimbolos.DOS_PUNTOS);
             } else if (Character.toLowerCase(c) == 't') {
                 //PR_TRUE
                 //puede formarse la palabra 'true'
                 System.out.println("puede formarse la palabra 'true'");
                 HashMap<String, Object> map = analizarPalabraReservada(array, i);
+                System.out.println("palabra formada: " + map.get("palabra"));
                 if (map.get("palabra").equals("true")) {
-                    contenidoList.add("PR_TRUE");
+                    contenidoList.add(TablaSimbolos.PR_TRUE);
                 } else {
                     error("No se reconoce '"+map.get("palabra")+"' como componente del lenguaje.");
                 }
-            } else if (c == 'F') {
+                i = (Integer) map.get("indice");
+                System.out.println(" valor de i = " + i);
+            } else if (Character.toLowerCase(c) == 'f') {
                 //PR_FALSE
                 //puede formarse la palabra 'false'
                 System.out.println("puede formarse la palabra 'false'");
                 HashMap<String, Object> map = analizarPalabraReservada(array, i);
+                System.out.println("palabra formada: " + map.get("palabra"));
                 if (map.get("palabra").equals("false")) {
-                    contenidoList.add("PR_FALSE");
+                    System.out.println("valor de palabra : " + map.get("palabra"));
+                    contenidoList.add(TablaSimbolos.PR_FALSE);
                 } else {
                     error("No se reconoce '"+map.get("palabra")+"' como componente del lenguaje.");
                 }
-            } else if (c == 'N') {
+                i = (Integer) map.get("indice");
+                System.out.println(" valor de i = " + i);
+            } else if (Character.toLowerCase(c) == 'n') {
                 //PR_NULL
                 //puede formarse la palabra 'null'
                 System.out.println("puede formarse la palabra 'null'");
                 HashMap<String, Object> map = analizarPalabraReservada(array, i);
+                System.out.println("palabra formada: " + map.get("palabra"));
                 if (map.get("palabra").equals("null")) {
-                    contenidoList.add("PR_NULL");
+                    contenidoList.add(TablaSimbolos.PR_NULL);
                 } else {
                     error("No se reconoce '"+map.get("palabra")+"' como componente del lenguaje.");
                 }
-            } else if (c == 'E') {
+                i = (Integer) map.get("indice");
+                System.out.println(" valor de i = " + i);
+            } /*else if (c == 'E') {
                 //EOF
-            }
+            }*/
 
             i += 1;
             //contenidoList.add("LITERAL_CADENA"); //TODO: cambiar por los valores del key
@@ -252,8 +270,9 @@ public class AnalizadorLexico {
             //lee el archivo según el path que fue introducido
             String contenido = new String(Files.readAllBytes(Paths.get(path)));
             //System.out.println(contenido); //borrar
+            TablaSimbolos.inicializarTablaSimbolos();
             siguienteLexema(contenido);
-
+            //TODO: iterar sobre el map de TablaSimbolos.tabla
         } catch (IOException e) {
             e.printStackTrace();
         }
