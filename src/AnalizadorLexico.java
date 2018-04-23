@@ -1,4 +1,6 @@
 
+import javafx.scene.control.Tab;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -272,7 +274,7 @@ public class AnalizadorLexico {
             //System.out.println(contenido); //borrar
             TablaSimbolos.inicializarTablaSimbolos();
             siguienteLexema(contenido);
-            //TODO: iterar sobre el map de TablaSimbolos.tabla
+            TablaSimbolos.tabla.forEach((k, v) -> System.out.println("Key: " + k + ": Value: " + v));
         } catch (IOException e) {
             e.printStackTrace();
         }
